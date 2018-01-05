@@ -106,18 +106,6 @@ int msm_display_config(void)
 		if (ret)
 			goto msm_display_config_out;
 		break;
-	case HDMI_PANEL:
-		dprintf(INFO, "Config HDMI PANEL.\n");
-		ret = mdss_hdmi_config(pinfo, &(panel->fb));
-		if (ret)
-			goto msm_display_config_out;
-		break;
-	case EDP_PANEL:
-		dprintf(INFO, "Config EDP PANEL.\n");
-		ret = mdp_edp_config(pinfo, &(panel->fb));
-		if (ret)
-			goto msm_display_config_out;
-		break;
 	default:
 		return ERR_INVALID_ARGS;
 	};
@@ -179,22 +167,6 @@ int msm_display_on(void)
 		if (ret)
 			goto msm_display_on_out;
 
-		break;
-	case HDMI_PANEL:
-		dprintf(INFO, "Turn on HDMI PANEL.\n");
-		ret = mdss_hdmi_init();
-		if (ret)
-			goto msm_display_on_out;
-
-		ret = mdss_hdmi_on(pinfo);
-		if (ret)
-			goto msm_display_on_out;
-		break;
-	case EDP_PANEL:
-		dprintf(INFO, "Turn on EDP PANEL.\n");
-		ret = mdp_edp_on(pinfo);
-		if (ret)
-			goto msm_display_on_out;
 		break;
 	default:
 		return ERR_INVALID_ARGS;
@@ -330,23 +302,6 @@ int msm_display_off(void)
 		if (ret)
 			goto msm_display_off_out;
 		break;
-	case EDP_PANEL:
-		dprintf(INFO, "Turn off EDP PANEL.\n");
-		ret = mdp_edp_off();
-		if (ret)
-			goto msm_display_off_out;
-		break;
-	default:
-		return ERR_INVALID_ARGS;
-	};
-
-	if (target_cont_splash_screen()) {
-		dprintf(INFO, "Continuous splash enabled, keeping panel alive.\n");
-		return NO_ERROR;
-	}
-
-	if (panel->post_power_func)
-		ret = panel->post_power_func(0);
 	if (ret)
 		goto msm_display_off_out;
 
